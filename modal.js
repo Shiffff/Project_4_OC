@@ -39,9 +39,7 @@ const inputCheckbox2 = form.checkbox2;
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 // close modal event
 closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
-closeBtnbottom.forEach((btn) =>
-  btn.addEventListener("click", closeModalAndReset)
-);
+closeBtnbottom.forEach((btn) => btn.addEventListener("click", closeModal));
 
 // launch modal form
 function launchModal() {
@@ -51,9 +49,7 @@ function launchModal() {
 function closeModal() {
   modalbg.style.display = "";
 }
-function closeModalAndReset() {
-  modalbg.style.display = "";
-}
+
 // ************************************************************************ First form's field 'Prénom'
 
 inputFirst.addEventListener("change", function () {
@@ -71,7 +67,7 @@ const valideFirst = function (inputFirst) {
   if (testFirst == false) {
     // When the value doesn't pass the regexp
     ErrorFirst.innerText = // innerText use to add text in HTML
-      "Veuillez entrer 2 caractères ou plus pour le champ du prénom.";
+      "Veuillez entrer 2 caractères alphanumérique ou plus pour le champ du prénom.";
     document
       .querySelector("#first")
       .setAttribute("style", "border:2px solid #ff4e5f;"); // setAttribute use to add a css rule
@@ -89,7 +85,7 @@ const valideFirstOnSubmit = function () {
   if (inputFirst.value.length < 1) {
     // Second check to control if the value isn't empty
     ErrorFirst.innerText =
-      "Veuillez entrer 2 caractères ou plus pour le champ du prénom.";
+      "Veuillez entrer 2 caractères alphanumérique ou plus pour le champ du prénom.";
 
     return false;
   } else {
