@@ -12,7 +12,6 @@ const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const closeBtn = document.querySelectorAll(".close");
 const closeBtnbottom = document.querySelectorAll(".btnConfirmationContainer");
-
 const formData = document.querySelectorAll(".formData");
 const ErrorFirst = document.querySelector(".ErrorFirst");
 const ErrorLast = document.querySelector(".ErrorLast");
@@ -24,7 +23,6 @@ const ErrorBirthdate = document.querySelector(".ErrorBirthdate");
 const inputfield = document.querySelector(".text-control");
 const modalBody = document.querySelector(".modal-body");
 const ConfirmationContainer = document.querySelector(".ConfirmationContainer");
-
 const form = document.querySelector("form"); // select form
 
 const inputFirst = form.first; // get every field on the form
@@ -52,6 +50,11 @@ function closeModal() {
 
 // ************************************************************************ First form's field 'Prénom'
 
+const firstRegExp = new RegExp(
+  "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", // regExp check the value from field
+  "gi"
+);
+
 inputFirst.addEventListener("change", function () {
   // addEventListener call a function when the user modifies the element's value
   valideFirst(this);
@@ -59,15 +62,12 @@ inputFirst.addEventListener("change", function () {
 
 const valideFirst = function (inputFirst) {
   // the function called by addEventListener
-  const firstRegExp = new RegExp(
-    "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", // regExp check the value from field
-    "gi"
-  );
+
   const testFirst = firstRegExp.test(inputFirst.value); // test the value with regexp
   if (testFirst == false) {
     // When the value doesn't pass the regexp
     ErrorFirst.innerText = // innerText use to add text in HTML
-      "Veuillez entrer 2 caractères alphanumérique ou plus pour le champ du prénom.";
+      "Le prénom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)";
     document
       .querySelector("#first")
       .setAttribute("style", "border:2px solid #ff4e5f;"); // setAttribute use to add a css rule
@@ -85,7 +85,7 @@ const valideFirstOnSubmit = function () {
   if (inputFirst.value.length < 1) {
     // Second check to control if the value isn't empty
     ErrorFirst.innerText =
-      "Veuillez entrer 2 caractères alphanumérique ou plus pour le champ du prénom.";
+      "Le prénom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)";
 
     return false;
   } else {
@@ -100,14 +100,10 @@ inputLast.addEventListener("change", function () {
 });
 
 const valideLast = function (inputLast) {
-  const lastRegExp = new RegExp(
-    "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$",
-    "gi"
-  );
-  const testLast = lastRegExp.test(inputLast.value);
+  const testLast = firstRegExp.test(inputLast.value);
   if (testLast == false) {
     ErrorLast.innerText =
-      "Veuillez entrer 2 caractères ou plus pour le champ du nom.";
+      "Le nom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)";
     document
       .querySelector("#last")
       .setAttribute("style", "border:2px solid #ff4e5f;");
@@ -125,7 +121,7 @@ const valideLast = function (inputLast) {
 const valideLastOnSubmit = function () {
   if (inputLast.value.length < 1) {
     ErrorLast.innerText =
-      "Veuillez entrer 2 caractères ou plus pour le champ du nom.";
+      "Le nom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)";
     document
       .querySelector("#last")
       .setAttribute("style", "border:2px solid #ff4e5f;");

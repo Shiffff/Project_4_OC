@@ -419,7 +419,7 @@ input[data-error]::after {
   color: #fff;
   position: relative;
   text-align: left;
-  min-width: 424px;
+  min-width: px;
 }
 .hero-content::after {
   content: "";
@@ -440,8 +440,8 @@ input[data-error]::after {
   white-space: nowrap;
 }
 .hero-text {
-  width: 100%;
   font-weight: normal;
+  width: 160%;
   margin-top: 17px;
   padding: 0;
 }
@@ -585,6 +585,9 @@ background: #3876ac;}
   .hero-headline{
     font-size: 28px;
     
+  }
+  .hero-text {
+    font-size: 12px;
   }
 
 }
