@@ -6,7 +6,6 @@ function editNav() {
     x.className = "topnav";
   }
 }
-
 // DOM Elements select HTML element
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
@@ -23,15 +22,10 @@ const ErrorBirthdate = document.querySelector(".ErrorBirthdate");
 const inputfield = document.querySelector(".text-control");
 const modalBody = document.querySelector(".modal-body");
 const ConfirmationContainer = document.querySelector(".ConfirmationContainer");
+
 const form = document.querySelector("form"); // select form
 
-const inputFirst = form.first; // get every field on the form
-const inputLast = form.last;
-const inputEmail = form.email;
-const inputQuantity = form.quantity;
-const inputBirthdate = form.birthdate;
-const inputCheckbox1 = form.checkbox1;
-const inputCheckbox2 = form.checkbox2;
+const readyToSent = [{}];
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -48,17 +42,230 @@ function closeModal() {
   modalbg.style.display = "";
 }
 
+const regExpName = new RegExp(
+  "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", // regExp check the value from field
+  "i"
+);
+const regExpEmail = new RegExp(
+  "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
+  "g"
+);
+const regExpQuantity = new RegExp("^[0-9]");
+const regExpBirthdate = new RegExp(
+  "^d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"
+);
+const inputName = [
+  {
+    el: form.first,
+    name: "Prénom",
+    errorMessage:
+      "Le prénom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)",
+    regExp: regExpName,
+    listenerMethod: "change",
+  },
+  {
+    el: form.last,
+    errorMessage:
+      "Le nom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)",
+    regExp: regExpName,
+    listenerMethod: "change",
+  },
+  {
+    el: form.email,
+    errorMessage: "Veuillez entrer une adresse électronique valide.",
+    regExp: regExpEmail,
+
+    listenerMethod: "change",
+  },
+  {
+    el: form.quantity,
+    errorMessage: "Veuillez entrer un nombre.",
+    regExp: regExpQuantity,
+    listenerMethod: "change",
+  },
+  {
+    el: form.birthdate,
+    errorMessage: "Vous devez entrer votre date de naissance.",
+    regExp: regExpQuantity,
+    listenerMethod: "change",
+  },
+  {
+    el: form.checkbox1,
+    errorMessage:
+      "Vous devez vérifier que vous acceptez les termes et conditions.",
+    checkBoxController: true,
+    listenerMethod: "change",
+    valid: true,
+  },
+  {
+    el: form.checkbox2,
+    checkBoxController: false,
+    listenerMethod: "change",
+  },
+]; // get every field on the form
+
 // ************************************************************************ First form's field 'Prénom'
 
-const firstRegExp = new RegExp(
-  "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", // regExp check the value from field
-  "gi"
-);
+const handleInput = (obj) => {
+  obj.el.addEventListener(obj.listenerMethod, function () {
+    const errorMessage = obj.el.parentNode.querySelector(".errorMessage");
+    if (obj.regExp) {
+      const testFirst = obj.regExp.test(obj.el.value);
+      obj.valid = testFirst === true;
 
+      if (obj.valid === true) {
+        obj.el.classList.remove("errorMessageName"); // setAttribute use to add a css rule // removeAttribute remove the css rule when it is there
+        errorMessage.innerText = ""; // remove text when it is there
+        return true; // and return true because the regExp pass
+      } else {
+        // When the value doesn't pass the regexp
+        errorMessage.innerText = obj.errorMessage; // innerText use to add text in HTML
+
+        obj.el.classList.add("errorMessageName"); // setAttribute use to add a css rule
+        return false; // the function return false because the regExp doesn't pass
+      }
+    } else if (obj.checkBoxController === true) {
+      if (obj.el.checked) {
+        obj.valid = true;
+
+        errorMessage.innerText = "";
+      } else {
+        obj.valid = false;
+        errorMessage.innerText = obj.errorMessage;
+      }
+    }
+  });
+};
+
+inputName.forEach(handleInput);
+
+const handleSubmit = (obj) => {
+  const errorMessage = obj.el.parentNode.querySelector(".errorMessage");
+
+  if (obj.valid === true) {
+    errorMessage.innerText = "";
+  } else {
+    errorMessage.innerText = obj.errorMessage;
+  }
+};
+
+form.addEventListener("submit", function (e) {
+  // launch the function when the user click on the submit button
+  e.preventDefault();
+  inputName.forEach(handleSubmit);
+  checkRadioValue(form.location);
+  // création de l'object final ?
+});
+
+const launchModalConfirmation = () => {
+  // function for disable the form and replace it to the confirmation message
+  modalBody.style.display = "none";
+  ConfirmationContainer.style.display = "block";
+};
+
+const checkRadioValue = (radioArray) => {
+  const errorRadioMessage = document.querySelector(".ErrorCheckbox");
+
+  if (radioArray.value.length > 1) {
+    errorRadioMessage.innerText = "";
+
+    return radioArray.value;
+  } else {
+    errorRadioMessage.innerText = "Vous devez choisir une option.";
+    return false;
+  }
+};
+
+/*
+
+const checkRadioValue = () => {
+  const getSelectedValue = document.querySelector(
+    'input[name="location"]:checked' // select every name of 'location' to found each radio button selected
+  );
+  if (getSelectedValue != null) {
+    ErrorCheckbox.innerText = "";
+    return true;
+  } else {
+    ErrorCheckbox.innerText = "Vous devez choisir une option.";
+    return false;
+  }
+};
+
+const checkRadio = () => {
+  const getSelectedValue = document.querySelector(
+    'input[name="location"]:checked'
+  );
+  if (getSelectedValue != null) {
+    return getSelectedValue.value; // return the value of selected radio button
+  }
+};
+
+
+  validecheckbox1();
+  valideBirthdate();
+  valideFirstOnSubmit();
+  valideLastOnSubmit();
+  valideEmailOnSubmit();
+  valideQuantityOnSubmit();
+  checkRadioValue();
+
+  if (
+    valideFirst(inputFirst) && // last control, for test if every function return 'true'
+    valideFirstOnSubmit() &&
+    valideLast(inputLast) &&
+    valideLastOnSubmit() &&
+    valideEmail(inputEmail) &&
+    valideEmailOnSubmit() &&
+    valideBirthdate(inputBirthdate) &&
+    valideQuantity(inputQuantity) &&
+    valideQuantityOnSubmit() &&
+    validecheckbox1() &&
+    checkRadioValue()
+  ) {
+    const readyToSend = {
+      // create an object with each field of form
+      firstName: inputFirst.value,
+      lastName: inputLast.value,
+      email: inputEmail.value,
+      birthDate: inputBirthdate.value,
+      quantityTournament: inputQuantity.value,
+      conditionChecked: inputCheckbox1.checked,
+      eventChecked: inputCheckbox2.checked,
+      location: checkRadio(),
+    };
+    console.log(readyToSend);
+    launchModalConfirmation(); // launch the function for change the form to confirmation message
+  } else {
+    console.log("nok");
+  }
+});
+  */
+
+// test
+
+/*
 inputFirst.addEventListener("change", function () {
   // addEventListener call a function when the user modifies the element's value
-  valideFirst(this);
+  handleInput(this);
 });
+const valideQuantityOnSubmit = function () {
+  if (inputQuantity.value) {
+    ErrorQuantity.innerText = "";
+    document
+      .querySelector("#quantity")
+      .removeAttribute("style", "border:2px solid #ff4e5f;");
+
+    return true;
+  } else {
+    ErrorQuantity.innerText = "Veuillez entrer un nombre.";
+    document
+      .querySelector("#quantity")
+      .setAttribute("style", "border:2px solid #ff4e5f;");
+
+    return false;
+  }
+};
+
 
 const valideFirst = function (inputFirst) {
   // the function called by addEventListener
@@ -135,6 +342,7 @@ const valideLastOnSubmit = function () {
     return true;
   }
 };
+
 // ************************************************************************ Third form's field 'Email'
 
 inputEmail.addEventListener("change", function () {
@@ -187,28 +395,6 @@ const valideEmailOnSubmit = function () {
   }
 };
 
-// ************************************************************************ Fourth form's field 'Date de naissance'
-
-const valideBirthdate = function () {
-  if (inputBirthdate.value) {
-    ErrorBirthdate.innerText = "";
-    document
-      .querySelector("#birthdate")
-      .removeAttribute("style", "border:2px solid #ff4e5f;");
-
-    return true;
-  } else {
-    ErrorBirthdate.innerText = "Vous devez entrer votre date de naissance.";
-    document
-      .querySelector("#birthdate")
-      .setAttribute("style", "border:2px solid #ff4e5f;");
-
-    return false;
-  }
-};
-
-// ************************************************************************ fifth form's field 'À combien de tournois GameOn avez-vous déjà participé ?'
-
 inputQuantity.addEventListener("change", function () {
   valideQuantity(this);
 });
@@ -232,49 +418,23 @@ const valideQuantity = function (inputQuantity) {
   }
 };
 
-const valideQuantityOnSubmit = function () {
-  if (inputQuantity.value) {
-    ErrorQuantity.innerText = "";
+const valideBirthdate = function () {
+  if (inputBirthdate.value) {
+    ErrorBirthdate.innerText = "";
     document
-      .querySelector("#quantity")
+      .querySelector("#birthdate")
       .removeAttribute("style", "border:2px solid #ff4e5f;");
 
     return true;
   } else {
-    ErrorQuantity.innerText = "Veuillez entrer un nombre.";
+    ErrorBirthdate.innerText = "Vous devez entrer votre date de naissance.";
     document
-      .querySelector("#quantity")
+      .querySelector("#birthdate")
       .setAttribute("style", "border:2px solid #ff4e5f;");
 
     return false;
   }
 };
-
-// ************************************************************************  sixth form's field 'A quel tournoi souhaitez-vous participer cette année ?'
-
-const checkRadioValue = () => {
-  const getSelectedValue = document.querySelector(
-    'input[name="location"]:checked' // select every name of 'location' to found each radio button selected
-  );
-  if (getSelectedValue != null) {
-    ErrorCheckbox.innerText = "";
-    return true;
-  } else {
-    ErrorCheckbox.innerText = "Vous devez choisir une option.";
-    return false;
-  }
-};
-
-const checkRadio = () => {
-  const getSelectedValue = document.querySelector(
-    'input[name="location"]:checked'
-  );
-  if (getSelectedValue != null) {
-    return getSelectedValue.value; // return the value of selected radio button
-  }
-};
-// ************************************************************************
-
 const validecheckbox1 = function () {
   if (inputCheckbox1.checked) {
     // .checked for verify if the case is check
@@ -288,53 +448,5 @@ const validecheckbox1 = function () {
   }
 };
 
-// ************************************************************************
-const launchModalConfirmation = () => {
-  // function for disable the form and replace it to the confirmation message
-  modalBody.style.display = "none";
-  ConfirmationContainer.style.display = "block";
-};
-
-// ************************************************************************
-
-form.addEventListener("submit", function (e) {
-  // launch the function when the user click on the submit button
-  e.preventDefault();
-  validecheckbox1();
-  valideBirthdate();
-  valideFirstOnSubmit();
-  valideLastOnSubmit();
-  valideEmailOnSubmit();
-  valideQuantityOnSubmit();
-  checkRadioValue();
-
-  if (
-    valideFirst(inputFirst) && // last control, for test if every function return 'true'
-    valideFirstOnSubmit() &&
-    valideLast(inputLast) &&
-    valideLastOnSubmit() &&
-    valideEmail(inputEmail) &&
-    valideEmailOnSubmit() &&
-    valideBirthdate(inputBirthdate) &&
-    valideQuantity(inputQuantity) &&
-    valideQuantityOnSubmit() &&
-    validecheckbox1() &&
-    checkRadioValue()
-  ) {
-    const readyToSend = {
-      // create an object with each field of form
-      firstName: inputFirst.value,
-      lastName: inputLast.value,
-      email: inputEmail.value,
-      birthDate: inputBirthdate.value,
-      quantityTournament: inputQuantity.value,
-      conditionChecked: inputCheckbox1.checked,
-      eventChecked: inputCheckbox2.checked,
-      location: checkRadio(),
-    };
-    console.log(readyToSend);
-    launchModalConfirmation(); // launch the function for change the form to confirmation message
-  } else {
-    console.log("nok");
-  }
-});
+*/
+// ************************************************************************ Fourth form's field 'Date de naissance'

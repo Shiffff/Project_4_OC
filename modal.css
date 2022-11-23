@@ -526,10 +526,6 @@ footer {
   }
 }
 
-.errorMessage{
-  font-size: 10px;
-  color: #ff4e5f;
-}
 
 
 
@@ -589,5 +585,16 @@ background: #3876ac;}
   .hero-text {
     font-size: 12px;
   }
-
 }
+
+
+.errorMessage{
+  font-size: 10px;
+  color: #ff4e5f;
+}
+
+
+.errorMessageName {
+  border: 2px solid #ff4e5f;
+}
+
