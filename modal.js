@@ -25,7 +25,7 @@ const ConfirmationContainer = document.querySelector(".ConfirmationContainer");
 
 const form = document.querySelector("form"); // select form
 
-const readyToSent = [];
+let readyToSent = [];
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -139,6 +139,12 @@ const handleInput = (obj) => {
         obj.valid = false;
         errorMessage.innerText = obj.errorMessage;
       }
+    } else {
+      if (obj.el.checked) {
+        obj.valid = true;
+      } else {
+        obj.valid = false;
+      }
     }
   });
 };
@@ -163,7 +169,12 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
   inputName.forEach(handleSubmit);
   checkRadioValue(form.location);
-  // création de l'object final ?
+  if (readyToSent.length > 5) {
+    launchModalConfirmation();
+    console.log("obj pret");
+  } else {
+    readyToSent = [];
+  }
 });
 
 const launchModalConfirmation = () => {
@@ -177,7 +188,8 @@ const checkRadioValue = (radioArray) => {
 
   if (radioArray.value.length > 1) {
     errorRadioMessage.innerText = "";
-
+    const newObj = { location: radioArray.value };
+    readyToSent.push(newObj);
     return radioArray.value;
   } else {
     errorRadioMessage.innerText = "Vous devez choisir une option.";
