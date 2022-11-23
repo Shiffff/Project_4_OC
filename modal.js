@@ -25,7 +25,7 @@ const ConfirmationContainer = document.querySelector(".ConfirmationContainer");
 
 const form = document.querySelector("form"); // select form
 
-const readyToSent = [{}];
+const readyToSent = [];
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -65,6 +65,7 @@ const inputName = [
   },
   {
     el: form.last,
+    name: "Nom",
     errorMessage:
       "Le nom doit comporter au moins deux lettres (caractères spéciaux et chiffre non autorisé)",
     regExp: regExpName,
@@ -72,6 +73,7 @@ const inputName = [
   },
   {
     el: form.email,
+    name: "Email",
     errorMessage: "Veuillez entrer une adresse électronique valide.",
     regExp: regExpEmail,
 
@@ -79,18 +81,21 @@ const inputName = [
   },
   {
     el: form.quantity,
+    name: "quantity",
     errorMessage: "Veuillez entrer un nombre.",
     regExp: regExpQuantity,
     listenerMethod: "change",
   },
   {
     el: form.birthdate,
+    name: "birthdate",
     errorMessage: "Vous devez entrer votre date de naissance.",
     regExp: regExpQuantity,
     listenerMethod: "change",
   },
   {
     el: form.checkbox1,
+    name: "checkbox1",
     errorMessage:
       "Vous devez vérifier que vous acceptez les termes et conditions.",
     checkBoxController: true,
@@ -99,6 +104,7 @@ const inputName = [
   },
   {
     el: form.checkbox2,
+    name: "checkbox2",
     checkBoxController: false,
     listenerMethod: "change",
   },
@@ -144,6 +150,9 @@ const handleSubmit = (obj) => {
 
   if (obj.valid === true) {
     errorMessage.innerText = "";
+    const newObj = { [obj.name]: obj.el.value };
+    readyToSent.push(newObj);
+    console.log(readyToSent);
   } else {
     errorMessage.innerText = obj.errorMessage;
   }
