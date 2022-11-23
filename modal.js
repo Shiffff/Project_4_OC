@@ -169,7 +169,7 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
   inputName.forEach(handleSubmit);
   checkRadioValue(form.location);
-  if (readyToSent.length > 5) {
+  if (readyToSent.length > 6) {
     launchModalConfirmation();
     console.log("obj pret");
   } else {
