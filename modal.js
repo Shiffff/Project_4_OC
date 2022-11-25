@@ -107,6 +107,7 @@ const inputName = [
     name: "checkbox2",
     checkBoxController: false,
     listenerMethod: "change",
+    errorMessage: "",
   },
 ]; // get every field on the form
 
@@ -158,7 +159,6 @@ const handleSubmit = (obj) => {
     errorMessage.innerText = "";
     const newObj = { [obj.name]: obj.el.value };
     readyToSent.push(newObj);
-    console.log(readyToSent);
   } else {
     errorMessage.innerText = obj.errorMessage;
   }
@@ -171,7 +171,7 @@ form.addEventListener("submit", function (e) {
   checkRadioValue(form.location);
   if (readyToSent.length > 6) {
     launchModalConfirmation();
-    console.log("obj pret");
+    console.log(readyToSent);
   } else {
     readyToSent = [];
   }
